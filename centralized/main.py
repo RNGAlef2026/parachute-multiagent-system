@@ -3,7 +3,7 @@ import os
 
 from dotenv import load_dotenv
 from openai import AsyncOpenAI
-from agents import Agent, Runner, OpenAIChatCompletionsModel, function_tool
+from agents import Agent, Runner, OpenAIChatCompletionsModel, function_tool, set_tracing_disabled
 
 from shared.faq_service import search_faq
 
@@ -20,6 +20,7 @@ from shared.calendar_service import create_appointment
 # ============================================================
 
 load_dotenv()
+set_tracing_disabled(True)
 
 NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1"
 NVIDIA_MODEL = "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning"
@@ -106,13 +107,43 @@ def create_appointment_tool(
     jump_type: str,
 ) -> str:
     """
-    Crea una cita para Parachute S.A.
+    Verifica las condiciones meteorologicas y crea una cita
+    solamente cuando sea seguro proceder.
 
     Args:
-        name: Nombre de la persona
+        name: Nombre de la persona.
         appointment_date: Fecha de la cita en formato YYYY-MM-DD.
         jump_type: Tipo de salto solicitado.
     """
+    try:
+        requested_date = date.fromisoformat(appointment_date)
+    except ValueError:
+        return "La fecha debe utilizar el formato YYYY-MM-DD."
+
+    validation = validate_forecast_date(requested_date)
+
+    if not validation["valid"]:
+        return validation["message"]
+
+    weather = get_weather(requested_date)
+    evaluation = evaluate_jump_safety(weather)
+
+    if evaluation["status"] == "UNSAFE":
+        return (
+            "Cita rechazada. Las condiciones meteorologicas "
+            "son NO SEGURAS / PROHIBIDAS para esa fecha. "
+            f"Razones: {evaluation['reasons']}"
+        )
+
+    if evaluation["status"] == "MARGINAL":
+        return (
+            "La cita no puede confirmarse automaticamente porque "
+            "las condiciones son MARGINALES. "
+            "Solo se permite proceder cuando corresponda a un "
+            "salto tandem experimentado. "
+            f"Condiciones: {evaluation['marginal_reasons']}"
+        )
+
     appointment = create_appointment(
         name=name,
         appointment_date=appointment_date,
