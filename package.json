@@ -1,0 +1,27 @@
+{
+  "name": "parchute-multiagent-system",
+  "version": "1.0.0",
+  "description": "Proyecto académico desarrollado para comparar tres arquitecturas de orquestación de sistemas multiagente (MAS) utilizando OpenAI Agents SDK.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RNGAlef2026/parachute-multiagent-system.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/RNGAlef2026/parachute-multiagent-system/issues"
+  },
+  "homepage": "https://github.com/RNGAlef2026/parachute-multiagent-system#readme",
+  "devDependencies": {
+    "promptfoo": "0.123.1"
+  }
+}

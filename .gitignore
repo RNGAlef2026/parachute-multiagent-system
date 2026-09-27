@@ -20,3 +20,9 @@ Thumbs.db
 
 # Runtime data
 appointments.json
+
+# Dependencias de Node.js
+node_modules/
+
+# Datos locales de promptfoo
+.promptfoo/
