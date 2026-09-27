@@ -1,0 +1,95 @@
+description: "Parachute S.A. - Evals de agendamiento"
+
+prompts:
+  - "{{question}}"
+
+providers:
+  - id: file://evals/provider.py
+    label: agente-centralizado
+
+defaultTest:
+  options:
+    provider:
+      id: openai:chat:nvidia/nemotron-3-nano-omni-30b-a3b-reasoning
+      config:
+        apiBaseUrl: https://integrate.api.nvidia.com/v1
+        apiKeyEnvar: NVIDIA_API_KEY
+        temperature: 0
+        max_tokens: 4096
+  assert:
+    - type: latency
+      threshold: 60000
+
+tests:
+  - description: "Cita - Rechazar fecha pasada"
+    vars:
+      question: >
+        Quiero reservar un salto tándem para el 2000-01-01.
+        Mi nombre es Cliente Prueba. Confirma si puedes agendarlo.
+    assert:
+      - type: regex
+        value: '[Pp]asad[ao]|[Aa]nterior|[Yy]a\s+(?:pas[oó]|ocurri[oó])'
+      - type: factuality
+        value: >
+          No se puede agendar la cita para el 2000-01-01 porque
+          es una fecha pasada. No se ha creado una reserva.
+      - type: javascript
+        value: |
+          const metadata = context.providerResponse?.metadata;
+          const calls = metadata?.tool_calls;
+          if (!Array.isArray(calls)) {
+            return { pass: false, score: 0, reason: "Falta el registro de herramientas." };
+          }
+          const validation = calls.find(
+            (call) =>
+              call.name === "check_weather_tool" &&
+              call.arguments?.target_date === "2000-01-01" &&
+              call.status === "returned" &&
+              /fecha pasada/i.test(String(call.result))
+          );
+          const bookingAttempt = calls.some(
+            (call) => call.name === "create_appointment_tool"
+          );
+          const noAppointments =
+            Array.isArray(metadata.appointments) &&
+            metadata.appointments.length === 0;
+          const pass = Boolean(validation) && !bookingAttempt && noAppointments;
+          return {
+            pass,
+            score: pass ? 1 : 0,
+            reason: pass
+              ? "La herramienta rechazó la fecha correcta, sin intentar crear ni guardar una cita."
+              : "Se esperaba validar 2000-01-01 con check_weather_tool y no intentar crear ni guardar una cita."
+          };
+
+  - description: "Cita - Crear con clima ideal"
+    vars:
+      weather_scenario: ideal
+      question: >
+        Mi nombre es Cliente Prueba. Quiero reservar un salto
+        tándem para mañana. Si las condiciones son seguras,
+        crea la cita y confirma la reserva.
+    assert:
+      - type: contains
+        value: "Cliente Prueba"
+      - type: regex
+        value: '[Cc]onfirmad[ao]|[Cc]read[ao]|[Aa]gendad[ao]|[Rr]egistrad[ao]|[Rr]eservad[ao]'
+      - type: factuality
+        value: file://evals/booking_reference.cjs
+      - type: javascript
+        value: file://evals/check_booking_created.cjs
+
+  - description: "Cita - Rechazar por lluvia"
+    vars:
+      weather_scenario: rain
+      question: >
+        Mi nombre es Cliente Prueba. Quiero reservar un salto
+        tándem para mañana. Si las condiciones son seguras,
+        crea la cita y confirma la reserva.
+    assert:
+      - type: regex
+        value: '[Ll]luvia|[Pp]recipitaci[oó]n|[Ll]luvios[ao]'
+      - type: factuality
+        value: file://evals/booking_reference.cjs
+      - type: javascript
+        value: file://evals/check_booking_rejected.cjs

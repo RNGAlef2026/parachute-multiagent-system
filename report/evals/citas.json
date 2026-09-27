@@ -1,0 +1,936 @@
+{
+  "evalId": "eval-Ctu-2026-09-27T18:42:15",
+  "results": {
+    "version": 3,
+    "timestamp": "2026-09-27T18:42:15.063Z",
+    "prompts": [
+      {
+        "id": "d3bcaf71c11c2678899be04d872718325f0916b3b0705e805ee29930663a42e2",
+        "raw": "{{question}}",
+        "label": "{{question}}",
+        "provider": "agente-centralizado",
+        "metrics": {
+          "score": 2.25,
+          "testPassCount": 2,
+          "testFailCount": 1,
+          "testErrorCount": 0,
+          "assertPassCount": 10,
+          "assertFailCount": 3,
+          "totalLatencyMs": 81898,
+          "tokenUsage": {
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "total": 0,
+            "numRequests": 3,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            },
+            "assertions": {
+              "total": 2878,
+              "prompt": 1015,
+              "completion": 1863,
+              "cached": 0,
+              "numRequests": 2,
+              "completionDetails": {
+                "reasoning": 0,
+                "acceptedPrediction": 0,
+                "rejectedPrediction": 0,
+                "cacheReadInputTokens": 0,
+                "cacheCreationInputTokens": 0
+              }
+            }
+          },
+          "namedScores": {},
+          "namedScoresCount": {},
+          "namedScoreWeights": {},
+          "cost": 0
+        }
+      }
+    ],
+    "results": [
+      {
+        "cost": 0,
+        "error": "Se esperaba validar 2000-01-01 con check_weather_tool y no intentar crear ni guardar una cita.",
+        "gradingResult": {
+          "pass": false,
+          "score": 0.25,
+          "reason": "Se esperaba validar 2000-01-01 con check_weather_tool y no intentar crear ni guardar una cita.",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          },
+          "componentResults": [
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "latency",
+                "threshold": 60000
+              }
+            },
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Expected output to match regex \"[Pp]asad[ao]|[Aa]nterior|[Yy]a\\s+(?:pas[oó]|ocurri[oó])\"",
+              "assertion": {
+                "type": "regex",
+                "value": "[Pp]asad[ao]|[Aa]nterior|[Yy]a\\s+(?:pas[oó]|ocurri[oó])"
+              }
+            },
+            {
+              "assertion": {
+                "type": "factuality",
+                "value": "No se puede agendar la cita para el 2000-01-01 porque es una fecha pasada. No se ha creado una reserva.\n"
+              },
+              "pass": false,
+              "reason": "API error: 503 Service Unavailable\n{\"error\":{\"message\":\"ResourceExhausted: Worker local total request limit reached (16/16)\",\"type\":\"Service Unavailable\",\"code\":503}}",
+              "score": 0,
+              "tokensUsed": {
+                "total": 0,
+                "prompt": 0,
+                "completion": 0,
+                "cached": 0,
+                "numRequests": 0,
+                "completionDetails": {
+                  "reasoning": 0,
+                  "acceptedPrediction": 0,
+                  "rejectedPrediction": 0
+                }
+              }
+            },
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Se esperaba validar 2000-01-01 con check_weather_tool y no intentar crear ni guardar una cita.",
+              "assertion": {
+                "type": "javascript",
+                "value": "const metadata = context.providerResponse?.metadata;\nconst calls = metadata?.tool_calls;\nif (!Array.isArray(calls)) {\n  return { pass: false, score: 0, reason: \"Falta el registro de herramientas.\" };\n}\nconst validation = calls.find(\n  (call) =>\n    call.name === \"check_weather_tool\" &&\n    call.arguments?.target_date === \"2000-01-01\" &&\n    call.status === \"returned\" &&\n    /fecha pasada/i.test(String(call.result))\n);\nconst bookingAttempt = calls.some(\n  (call) => call.name === \"create_appointment_tool\"\n);\nconst noAppointments =\n  Array.isArray(metadata.appointments) &&\n  metadata.appointments.length === 0;\nconst pass = Boolean(validation) && !bookingAttempt && noAppointments;\nreturn {\n  pass,\n  score: pass ? 1 : 0,\n  reason: pass\n    ? \"La herramienta rechazó la fecha correcta, sin intentar crear ni guardar una cita.\"\n    : \"Se esperaba validar 2000-01-01 con check_weather_tool y no intentar crear ni guardar una cita.\"\n};\n"
+              }
+            }
+          ]
+        },
+        "id": "7a62b39f-1860-4913-9e35-4f5290a109f2",
+        "latencyMs": 26613,
+        "namedScores": {},
+        "prompt": {
+          "raw": "Quiero reservar un salto tándem para el 2000-01-01. Mi nombre es Cliente Prueba. Confirma si puedes agendarlo.",
+          "label": "{{question}}",
+          "config": {
+            "provider": {
+              "id": "openai:chat:nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+              "config": {
+                "apiBaseUrl": "https://integrate.api.nvidia.com/v1",
+                "apiKeyEnvar": "[REDACTED]",
+                "temperature": 0,
+                "max_tokens": 4096
+              }
+            }
+          }
+        },
+        "promptId": "d3bcaf71c11c2678899be04d872718325f0916b3b0705e805ee29930663a42e2",
+        "promptIdx": 0,
+        "provider": {
+          "id": "file://evals/provider.py",
+          "label": "agente-centralizado"
+        },
+        "response": {
+          "output": "Lamentamos no poder verificar el clima para el 2000‑01‑01 en este momento, ya que el servicio está temporalmente indisponible. ¿Te gustaría consultar otra fecha o necesitas ayuda con alguna otra gestión?",
+          "metadata": {
+            "tool_calls": [
+              {
+                "name": "weather_specialist",
+                "arguments": {
+                  "input": "2000-01-01"
+                },
+                "status": "returned",
+                "result": "An error occurred while running the tool. Please try again. Error: Error code: 503 - {'error': {'message': 'ResourceExhausted: Worker local total request limit reached (16/16)', 'type': 'Service Unavailable', 'code': 503}}"
+              }
+            ],
+            "appointments": [],
+            "expected_date": "2026-09-28",
+            "weather_scenario": "live"
+          },
+          "cached": false
+        },
+        "score": 0.25,
+        "success": false,
+        "testCase": {
+          "description": "Cita - Rechazar fecha pasada",
+          "vars": {
+            "question": "Quiero reservar un salto tándem para el 2000-01-01. Mi nombre es Cliente Prueba. Confirma si puedes agendarlo.\n"
+          },
+          "assert": [
+            {
+              "type": "latency",
+              "threshold": 60000
+            },
+            {
+              "type": "regex",
+              "value": "[Pp]asad[ao]|[Aa]nterior|[Yy]a\\s+(?:pas[oó]|ocurri[oó])"
+            },
+            {
+              "type": "factuality",
+              "value": "No se puede agendar la cita para el 2000-01-01 porque es una fecha pasada. No se ha creado una reserva.\n"
+            },
+            {
+              "type": "javascript",
+              "value": "const metadata = context.providerResponse?.metadata;\nconst calls = metadata?.tool_calls;\nif (!Array.isArray(calls)) {\n  return { pass: false, score: 0, reason: \"Falta el registro de herramientas.\" };\n}\nconst validation = calls.find(\n  (call) =>\n    call.name === \"check_weather_tool\" &&\n    call.arguments?.target_date === \"2000-01-01\" &&\n    call.status === \"returned\" &&\n    /fecha pasada/i.test(String(call.result))\n);\nconst bookingAttempt = calls.some(\n  (call) => call.name === \"create_appointment_tool\"\n);\nconst noAppointments =\n  Array.isArray(metadata.appointments) &&\n  metadata.appointments.length === 0;\nconst pass = Boolean(validation) && !bookingAttempt && noAppointments;\nreturn {\n  pass,\n  score: pass ? 1 : 0,\n  reason: pass\n    ? \"La herramienta rechazó la fecha correcta, sin intentar crear ni guardar una cita.\"\n    : \"Se esperaba validar 2000-01-01 con check_weather_tool y no intentar crear ni guardar una cita.\"\n};\n"
+            }
+          ],
+          "options": {
+            "provider": {
+              "id": "openai:chat:nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+              "config": {
+                "apiBaseUrl": "https://integrate.api.nvidia.com/v1",
+                "apiKeyEnvar": "[REDACTED]",
+                "temperature": 0,
+                "max_tokens": 4096
+              }
+            }
+          },
+          "metadata": {}
+        },
+        "testIdx": 0,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "question": "Quiero reservar un salto tándem para el 2000-01-01. Mi nombre es Cliente Prueba. Confirma si puedes agendarlo.\n"
+        },
+        "metadata": {
+          "tool_calls": [
+            {
+              "name": "weather_specialist",
+              "arguments": {
+                "input": "2000-01-01"
+              },
+              "status": "returned",
+              "result": "An error occurred while running the tool. Please try again. Error: Error code: 503 - {'error': {'message': 'ResourceExhausted: Worker local total request limit reached (16/16)', 'type': 'Service Unavailable', 'code': 503}}"
+            }
+          ],
+          "appointments": [],
+          "expected_date": "2026-09-28",
+          "weather_scenario": "live",
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 1
+      },
+      {
+        "cost": 0,
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "All assertions passed",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 1611,
+            "prompt": 461,
+            "completion": 1150,
+            "cached": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          },
+          "componentResults": [
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "latency",
+                "threshold": 60000
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "contains",
+                "value": "Cliente Prueba"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "regex",
+                "value": "[Cc]onfirmad[ao]|[Cc]read[ao]|[Aa]gendad[ao]|[Rr]egistrad[ao]|[Rr]eservad[ao]"
+              }
+            },
+            {
+              "assertion": {
+                "type": "factuality",
+                "value": "file://evals/booking_reference.cjs"
+              },
+              "pass": true,
+              "score": 1,
+              "reason": "The submitted answer includes the name 'Cliente Prueba', the type of jump 'tándem', the date '2026-09-28', and confirms the reservation, which are all facts present in the expert answer. It does not add any contradictory information and omits the detailed weather conditions, making it a subset of the expert answer that is fully consistent with it.",
+              "tokensUsed": {
+                "total": 1611,
+                "prompt": 461,
+                "completion": 1150,
+                "cached": 0,
+                "numRequests": 1,
+                "completionDetails": {
+                  "reasoning": 0,
+                  "acceptedPrediction": 0,
+                  "rejectedPrediction": 0
+                }
+              },
+              "metadata": {
+                "renderedAssertionValue": "En este caso, mañana corresponde a 2026-09-28. Se creó una cita para Cliente Prueba para el 2026-09-28, para un salto tándem, después de verificar condiciones meteorológicas ideales: temperatura de 25 °C, precipitación de 0 mm, cobertura de nubes del 10 %, viento de 10 km/h y ráfagas de 15 km/h."
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Se consultó el clima y se creó una única cita con los datos correctos.",
+              "assertion": {
+                "type": "javascript",
+                "value": "file://evals/check_booking_created.cjs"
+              }
+            }
+          ]
+        },
+        "id": "8cd739d4-8ad7-4435-9341-dc97d0842494",
+        "latencyMs": 39437,
+        "namedScores": {},
+        "prompt": {
+          "raw": "Mi nombre es Cliente Prueba. Quiero reservar un salto tándem para mañana. Si las condiciones son seguras, crea la cita y confirma la reserva.",
+          "label": "{{question}}",
+          "config": {
+            "provider": {
+              "id": "openai:chat:nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+              "config": {
+                "apiBaseUrl": "https://integrate.api.nvidia.com/v1",
+                "apiKeyEnvar": "[REDACTED]",
+                "temperature": 0,
+                "max_tokens": 4096
+              }
+            }
+          }
+        },
+        "promptId": "d3bcaf71c11c2678899be04d872718325f0916b3b0705e805ee29930663a42e2",
+        "promptIdx": 0,
+        "provider": {
+          "id": "file://evals/provider.py",
+          "label": "agente-centralizado"
+        },
+        "response": {
+          "output": "¡Reserva confirmada! Cliente Prueba, salto tándem programado para el **2026-09-28**. ¡Todo está listo para mañana!",
+          "metadata": {
+            "tool_calls": [
+              {
+                "name": "weather_specialist",
+                "arguments": {
+                  "input": "2026-09-28"
+                },
+                "status": "returned",
+                "result": "La fecha **2026-09-28** presenta condiciones climáticas ideales para realizar un salto en Parachute S.A. Los parámetros observados son:  \n- **Temperatura**: 25°C  \n- **Precipitación**: 0 mm  \n- **Cobertura de nubes**: 10%  \n- **Viento**: 10 km/h (ráfagas de 15 km/h)  \n- **Estado general**: **IDEAL**  \n\nNo hay prohibiciones ni condiciones marginales que impidan el salto. ¡Es una fecha recomendada para la actividad!"
+              },
+              {
+                "name": "check_weather_tool",
+                "arguments": {
+                  "target_date": "2026-09-28"
+                },
+                "status": "returned",
+                "result": "Fecha: 2026-09-28\nTemperatura: 25 C\nPrecipitacion: 0 mm\nCobertura de nubes: 10%\nVelocidad del viento: 10 km/h\nRafagas de viento: 15 km/h\nEstado: IDEAL\nEvaluacion: CONDICIONES IDEALES\nRazones de prohibicion: []\nCondiciones marginales: []"
+              },
+              {
+                "name": "booking_specialist",
+                "arguments": {
+                  "input": "Cliente Prueba, 2026-09-28, salto tándem"
+                },
+                "status": "returned",
+                "result": "La cita ha sido creada exitosamente para el Cliente Prueba el 2026-09-28 con tipo de salto tándem. ¡Todo está programado!"
+              },
+              {
+                "name": "create_appointment_tool",
+                "arguments": {
+                  "jump_type": "tándem",
+                  "name": "Cliente Prueba",
+                  "appointment_date": "2026-09-28"
+                },
+                "status": "returned",
+                "result": "Cita creada correctamente.\nNombre: Cliente Prueba\nFecha: 2026-09-28\nTipo de salto: tándem"
+              }
+            ],
+            "appointments": [
+              {
+                "name": "Cliente Prueba",
+                "date": "2026-09-28",
+                "jump_type": "tándem"
+              }
+            ],
+            "expected_date": "2026-09-28",
+            "weather_scenario": "ideal"
+          },
+          "cached": false
+        },
+        "score": 1,
+        "success": true,
+        "testCase": {
+          "description": "Cita - Crear con clima ideal",
+          "vars": {
+            "weather_scenario": "ideal",
+            "question": "Mi nombre es Cliente Prueba. Quiero reservar un salto tándem para mañana. Si las condiciones son seguras, crea la cita y confirma la reserva.\n"
+          },
+          "assert": [
+            {
+              "type": "latency",
+              "threshold": 60000
+            },
+            {
+              "type": "contains",
+              "value": "Cliente Prueba"
+            },
+            {
+              "type": "regex",
+              "value": "[Cc]onfirmad[ao]|[Cc]read[ao]|[Aa]gendad[ao]|[Rr]egistrad[ao]|[Rr]eservad[ao]"
+            },
+            {
+              "type": "factuality",
+              "value": "file://evals/booking_reference.cjs"
+            },
+            {
+              "type": "javascript",
+              "value": "file://evals/check_booking_created.cjs"
+            }
+          ],
+          "options": {
+            "provider": {
+              "id": "openai:chat:nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+              "config": {
+                "apiBaseUrl": "https://integrate.api.nvidia.com/v1",
+                "apiKeyEnvar": "[REDACTED]",
+                "temperature": 0,
+                "max_tokens": 4096
+              }
+            }
+          },
+          "metadata": {}
+        },
+        "testIdx": 1,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 1611,
+            "prompt": 461,
+            "completion": 1150,
+            "cached": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "weather_scenario": "ideal",
+          "question": "Mi nombre es Cliente Prueba. Quiero reservar un salto tándem para mañana. Si las condiciones son seguras, crea la cita y confirma la reserva.\n"
+        },
+        "metadata": {
+          "tool_calls": [
+            {
+              "name": "weather_specialist",
+              "arguments": {
+                "input": "2026-09-28"
+              },
+              "status": "returned",
+              "result": "La fecha **2026-09-28** presenta condiciones climáticas ideales para realizar un salto en Parachute S.A. Los parámetros observados son:  \n- **Temperatura**: 25°C  \n- **Precipitación**: 0 mm  \n- **Cobertura de nubes**: 10%  \n- **Viento**: 10 km/h (ráfagas de 15 km/h)  \n- **Estado general**: **IDEAL**  \n\nNo hay prohibiciones ni condiciones marginales que impidan el salto. ¡Es una fecha recomendada para la actividad!"
+            },
+            {
+              "name": "check_weather_tool",
+              "arguments": {
+                "target_date": "2026-09-28"
+              },
+              "status": "returned",
+              "result": "Fecha: 2026-09-28\nTemperatura: 25 C\nPrecipitacion: 0 mm\nCobertura de nubes: 10%\nVelocidad del viento: 10 km/h\nRafagas de viento: 15 km/h\nEstado: IDEAL\nEvaluacion: CONDICIONES IDEALES\nRazones de prohibicion: []\nCondiciones marginales: []"
+            },
+            {
+              "name": "booking_specialist",
+              "arguments": {
+                "input": "Cliente Prueba, 2026-09-28, salto tándem"
+              },
+              "status": "returned",
+              "result": "La cita ha sido creada exitosamente para el Cliente Prueba el 2026-09-28 con tipo de salto tándem. ¡Todo está programado!"
+            },
+            {
+              "name": "create_appointment_tool",
+              "arguments": {
+                "jump_type": "tándem",
+                "name": "Cliente Prueba",
+                "appointment_date": "2026-09-28"
+              },
+              "status": "returned",
+              "result": "Cita creada correctamente.\nNombre: Cliente Prueba\nFecha: 2026-09-28\nTipo de salto: tándem"
+            }
+          ],
+          "appointments": [
+            {
+              "name": "Cliente Prueba",
+              "date": "2026-09-28",
+              "jump_type": "tándem"
+            }
+          ],
+          "expected_date": "2026-09-28",
+          "weather_scenario": "ideal",
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 0
+      },
+      {
+        "cost": 0,
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "All assertions passed",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 1267,
+            "prompt": 554,
+            "completion": 713,
+            "cached": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          },
+          "componentResults": [
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "latency",
+                "threshold": 60000
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "regex",
+                "value": "[Ll]luvia|[Pp]recipitaci[oó]n|[Ll]luvios[ao]"
+              }
+            },
+            {
+              "assertion": {
+                "type": "factuality",
+                "value": "file://evals/booking_reference.cjs"
+              },
+              "pass": true,
+              "score": 1,
+              "reason": "The submitted answer includes the key factual points from the expert answer: it correctly identifies the date as 2026-09-28, states that the conditions are unsafe because 5 mm of precipitation exceeds the 0 mm limit, and notes that a reservation cannot be created or confirmed for that date. It omits the additional details about temperature, cloud cover, wind speed, and gusts, making it a subset of the expert answer, but it does not contradict any of the expert's facts, so it is fully consistent.",
+              "tokensUsed": {
+                "total": 1267,
+                "prompt": 554,
+                "completion": 713,
+                "cached": 0,
+                "numRequests": 1,
+                "completionDetails": {
+                  "reasoning": 0,
+                  "acceptedPrediction": 0,
+                  "rejectedPrediction": 0
+                }
+              },
+              "metadata": {
+                "renderedAssertionValue": "En este caso, mañana corresponde a 2026-09-28. No se creó una cita para Cliente Prueba para el 2026-09-28. Las condiciones son inseguras para un salto tándem porque se esperan 5 mm de precipitación y la regla prohíbe saltar con precipitación mayor que 0 mm. Los demás datos del escenario son temperatura de 25 °C, cobertura de nubes del 10 %, viento de 10 km/h y ráfagas de 15 km/h."
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Se consultó la fecha correcta, se detectó lluvia y no se intentó reservar ni se guardaron citas.",
+              "assertion": {
+                "type": "javascript",
+                "value": "file://evals/check_booking_rejected.cjs"
+              }
+            }
+          ]
+        },
+        "id": "76a1324d-9b97-418d-9832-60246258eb46",
+        "latencyMs": 15848,
+        "namedScores": {},
+        "prompt": {
+          "raw": "Mi nombre es Cliente Prueba. Quiero reservar un salto tándem para mañana. Si las condiciones son seguras, crea la cita y confirma la reserva.",
+          "label": "{{question}}",
+          "config": {
+            "provider": {
+              "id": "openai:chat:nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+              "config": {
+                "apiBaseUrl": "https://integrate.api.nvidia.com/v1",
+                "apiKeyEnvar": "[REDACTED]",
+                "temperature": 0,
+                "max_tokens": 4096
+              }
+            }
+          }
+        },
+        "promptId": "d3bcaf71c11c2678899be04d872718325f0916b3b0705e805ee29930663a42e2",
+        "promptIdx": 0,
+        "provider": {
+          "id": "file://evals/provider.py",
+          "label": "agente-centralizado"
+        },
+        "response": {
+          "output": "Lamentablemente, según el pronóstico meteorológico, la fecha de mañana — 2026‑09‑28 — **no es segura** para realizar un salto en tándem. Se espera una precipitación de 5 mm, lo que activa la prohibición de salto.\n\nDado que las condiciones no son adecuadas, no podemos crear ni confirmar la reserva para esa fecha. ¿Te gustaría consultar otro día disponible o necesitas más información para reprogramar tu salto?",
+          "metadata": {
+            "tool_calls": [
+              {
+                "name": "weather_specialist",
+                "arguments": {
+                  "input": "2026-09-28 tandem skydive"
+                },
+                "status": "returned",
+                "result": "La fecha 2026-09-28 para un salto en tándem **NO ES SEGURO** según el pronóstico meteorológico. Las condiciones indican **5 mm de precipitación**, lo que activa la prohibición de salto. Se recomienda reprogramar para una fecha con condiciones climáticas favorables. \n\n**Evaluación:** ❌ NO SEGURO / PROHIBIDO  \n**Razón principal:** Se espera precipitación (5 mm)."
+              },
+              {
+                "name": "check_weather_tool",
+                "arguments": {
+                  "target_date": "2026-09-28"
+                },
+                "status": "returned",
+                "result": "Fecha: 2026-09-28\nTemperatura: 25 C\nPrecipitacion: 5 mm\nCobertura de nubes: 10%\nVelocidad del viento: 10 km/h\nRafagas de viento: 15 km/h\nEstado: UNSAFE\nEvaluacion: NO SEGURO / PROHIBIDO\nRazones de prohibicion: ['Se espera precipitacion: 5 mm.']\nCondiciones marginales: []"
+              }
+            ],
+            "appointments": [],
+            "expected_date": "2026-09-28",
+            "weather_scenario": "rain"
+          },
+          "cached": false
+        },
+        "score": 1,
+        "success": true,
+        "testCase": {
+          "description": "Cita - Rechazar por lluvia",
+          "vars": {
+            "weather_scenario": "rain",
+            "question": "Mi nombre es Cliente Prueba. Quiero reservar un salto tándem para mañana. Si las condiciones son seguras, crea la cita y confirma la reserva.\n"
+          },
+          "assert": [
+            {
+              "type": "latency",
+              "threshold": 60000
+            },
+            {
+              "type": "regex",
+              "value": "[Ll]luvia|[Pp]recipitaci[oó]n|[Ll]luvios[ao]"
+            },
+            {
+              "type": "factuality",
+              "value": "file://evals/booking_reference.cjs"
+            },
+            {
+              "type": "javascript",
+              "value": "file://evals/check_booking_rejected.cjs"
+            }
+          ],
+          "options": {
+            "provider": {
+              "id": "openai:chat:nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+              "config": {
+                "apiBaseUrl": "https://integrate.api.nvidia.com/v1",
+                "apiKeyEnvar": "[REDACTED]",
+                "temperature": 0,
+                "max_tokens": 4096
+              }
+            }
+          },
+          "metadata": {}
+        },
+        "testIdx": 2,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 1267,
+            "prompt": 554,
+            "completion": 713,
+            "cached": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "weather_scenario": "rain",
+          "question": "Mi nombre es Cliente Prueba. Quiero reservar un salto tándem para mañana. Si las condiciones son seguras, crea la cita y confirma la reserva.\n"
+        },
+        "metadata": {
+          "tool_calls": [
+            {
+              "name": "weather_specialist",
+              "arguments": {
+                "input": "2026-09-28 tandem skydive"
+              },
+              "status": "returned",
+              "result": "La fecha 2026-09-28 para un salto en tándem **NO ES SEGURO** según el pronóstico meteorológico. Las condiciones indican **5 mm de precipitación**, lo que activa la prohibición de salto. Se recomienda reprogramar para una fecha con condiciones climáticas favorables. \n\n**Evaluación:** ❌ NO SEGURO / PROHIBIDO  \n**Razón principal:** Se espera precipitación (5 mm)."
+            },
+            {
+              "name": "check_weather_tool",
+              "arguments": {
+                "target_date": "2026-09-28"
+              },
+              "status": "returned",
+              "result": "Fecha: 2026-09-28\nTemperatura: 25 C\nPrecipitacion: 5 mm\nCobertura de nubes: 10%\nVelocidad del viento: 10 km/h\nRafagas de viento: 15 km/h\nEstado: UNSAFE\nEvaluacion: NO SEGURO / PROHIBIDO\nRazones de prohibicion: ['Se espera precipitacion: 5 mm.']\nCondiciones marginales: []"
+            }
+          ],
+          "appointments": [],
+          "expected_date": "2026-09-28",
+          "weather_scenario": "rain",
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 0
+      }
+    ],
+    "stats": {
+      "successes": 2,
+      "failures": 1,
+      "errors": 0,
+      "tokenUsage": {
+        "prompt": 0,
+        "completion": 0,
+        "cached": 0,
+        "total": 0,
+        "numRequests": 3,
+        "completionDetails": {
+          "reasoning": 0,
+          "acceptedPrediction": 0,
+          "rejectedPrediction": 0,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        },
+        "assertions": {
+          "total": 2878,
+          "prompt": 1015,
+          "completion": 1863,
+          "cached": 0,
+          "numRequests": 2,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          }
+        }
+      },
+      "durationMs": 104421,
+      "evaluationDurationMs": 104421
+    }
+  },
+  "config": {
+    "tags": {},
+    "description": "Parachute S.A. - Evals de agendamiento",
+    "prompts": [
+      "{{question}}"
+    ],
+    "providers": [
+      {
+        "id": "file://evals/provider.py",
+        "label": "agente-centralizado"
+      }
+    ],
+    "tests": [
+      {
+        "description": "Cita - Rechazar fecha pasada",
+        "vars": {
+          "question": "Quiero reservar un salto tándem para el 2000-01-01. Mi nombre es Cliente Prueba. Confirma si puedes agendarlo.\n"
+        },
+        "assert": [
+          {
+            "type": "regex",
+            "value": "[Pp]asad[ao]|[Aa]nterior|[Yy]a\\s+(?:pas[oó]|ocurri[oó])"
+          },
+          {
+            "type": "factuality",
+            "value": "No se puede agendar la cita para el 2000-01-01 porque es una fecha pasada. No se ha creado una reserva.\n"
+          },
+          {
+            "type": "javascript",
+            "value": "const metadata = context.providerResponse?.metadata;\nconst calls = metadata?.tool_calls;\nif (!Array.isArray(calls)) {\n  return { pass: false, score: 0, reason: \"Falta el registro de herramientas.\" };\n}\nconst validation = calls.find(\n  (call) =>\n    call.name === \"check_weather_tool\" &&\n    call.arguments?.target_date === \"2000-01-01\" &&\n    call.status === \"returned\" &&\n    /fecha pasada/i.test(String(call.result))\n);\nconst bookingAttempt = calls.some(\n  (call) => call.name === \"create_appointment_tool\"\n);\nconst noAppointments =\n  Array.isArray(metadata.appointments) &&\n  metadata.appointments.length === 0;\nconst pass = Boolean(validation) && !bookingAttempt && noAppointments;\nreturn {\n  pass,\n  score: pass ? 1 : 0,\n  reason: pass\n    ? \"La herramienta rechazó la fecha correcta, sin intentar crear ni guardar una cita.\"\n    : \"Se esperaba validar 2000-01-01 con check_weather_tool y no intentar crear ni guardar una cita.\"\n};\n"
+          }
+        ]
+      },
+      {
+        "description": "Cita - Crear con clima ideal",
+        "vars": {
+          "weather_scenario": "ideal",
+          "question": "Mi nombre es Cliente Prueba. Quiero reservar un salto tándem para mañana. Si las condiciones son seguras, crea la cita y confirma la reserva.\n"
+        },
+        "assert": [
+          {
+            "type": "contains",
+            "value": "Cliente Prueba"
+          },
+          {
+            "type": "regex",
+            "value": "[Cc]onfirmad[ao]|[Cc]read[ao]|[Aa]gendad[ao]|[Rr]egistrad[ao]|[Rr]eservad[ao]"
+          },
+          {
+            "type": "factuality",
+            "value": "file://evals/booking_reference.cjs"
+          },
+          {
+            "type": "javascript",
+            "value": "file://evals/check_booking_created.cjs"
+          }
+        ]
+      },
+      {
+        "description": "Cita - Rechazar por lluvia",
+        "vars": {
+          "weather_scenario": "rain",
+          "question": "Mi nombre es Cliente Prueba. Quiero reservar un salto tándem para mañana. Si las condiciones son seguras, crea la cita y confirma la reserva.\n"
+        },
+        "assert": [
+          {
+            "type": "regex",
+            "value": "[Ll]luvia|[Pp]recipitaci[oó]n|[Ll]luvios[ao]"
+          },
+          {
+            "type": "factuality",
+            "value": "file://evals/booking_reference.cjs"
+          },
+          {
+            "type": "javascript",
+            "value": "file://evals/check_booking_rejected.cjs"
+          }
+        ]
+      }
+    ],
+    "env": {},
+    "defaultTest": {
+      "options": {
+        "provider": {
+          "id": "openai:chat:nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+          "config": {
+            "apiBaseUrl": "https://integrate.api.nvidia.com/v1",
+            "apiKeyEnvar": "[REDACTED]",
+            "temperature": 0,
+            "max_tokens": 4096
+          }
+        }
+      },
+      "assert": [
+        {
+          "type": "latency",
+          "threshold": 60000
+        }
+      ],
+      "vars": {},
+      "metadata": {}
+    },
+    "outputPath": [
+      "report/evals/citas.html",
+      "report/evals/citas.json"
+    ],
+    "extensions": [],
+    "metadata": {},
+    "evaluateOptions": {}
+  },
+  "shareableUrl": null,
+  "metadata": {
+    "promptfooVersion": "0.123.1",
+    "nodeVersion": "v24.19.0",
+    "platform": "win32",
+    "arch": "x64",
+    "exportedAt": "2026-09-27T18:44:00.697Z",
+    "evaluationCreatedAt": "2026-09-27T18:42:15.063Z"
+  },
+  "vars": [
+    "question",
+    "weather_scenario"
+  ],
+  "runtimeOptions": {
+    "eventSource": "cli",
+    "showProgressBar": true,
+    "repeat": 1,
+    "maxConcurrency": 1,
+    "cache": false
+  }
+}

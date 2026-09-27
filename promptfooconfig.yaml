@@ -1,0 +1,57 @@
+description: "Parachute S.A. - Evals de preguntas frecuentes"
+
+prompts:
+  - "{{question}}"
+
+providers:
+  - id: file://evals/provider.py
+    label: agente-centralizado
+
+defaultTest:
+  options:
+    provider:
+      id: openai:chat:nvidia/nemotron-3-nano-omni-30b-a3b-reasoning
+      config:
+        apiBaseUrl: https://integrate.api.nvidia.com/v1
+        apiKeyEnvar: NVIDIA_API_KEY
+        temperature: 0
+        max_tokens: 4096
+  assert:
+    - type: latency
+      threshold: 60000
+    - type: javascript
+      value: file://evals/check_faq_tools.cjs
+
+tests:
+  - description: "FAQ - Correo de atención"
+    vars:
+      question: "¿Cuál es el correo de atención al cliente de Parachute S.A.?"
+    assert:
+      - type: contains
+        value: "soporte@parachutesa.gt"
+      - type: factuality
+        value: "El correo de atención al cliente es soporte@parachutesa.gt."
+
+  - description: "FAQ - Altitud del salto"
+    vars:
+      question: "¿A qué altura se realiza el salto tándem? Responde en metros."
+    assert:
+      - type: regex
+        value: '\b3[.,\s]?000\s*(?:metros|m\b)'
+      - type: factuality
+        value: >
+          El salto tándem se realiza a una altitud de 3000 metros
+          sobre el nivel medio del mar. El paracaídas principal
+          se despliega a 1500 metros sobre el terreno.
+
+  - description: "FAQ - Velocidad de caída libre"
+    vars:
+      question: "¿Qué velocidad se alcanza durante la caída libre? Responde en km/h."
+    assert:
+      - type: regex
+        value: '\b200\s*km\s*/\s*h\b'
+      - type: factuality
+        value: >
+          Durante la caída libre se alcanza una velocidad terminal
+          promedio de 200 km/h, mantenida aproximadamente entre
+          35 y 45 segundos antes de abrir el paracaídas principal.

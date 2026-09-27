@@ -1,0 +1,834 @@
+{
+  "evalId": "eval-X7O-2026-09-27T18:47:27",
+  "results": {
+    "version": 3,
+    "timestamp": "2026-09-27T18:47:27.002Z",
+    "prompts": [
+      {
+        "id": "d3bcaf71c11c2678899be04d872718325f0916b3b0705e805ee29930663a42e2",
+        "raw": "{{question}}",
+        "label": "{{question}}",
+        "provider": "agente-centralizado",
+        "metrics": {
+          "score": 1.25,
+          "testPassCount": 0,
+          "testFailCount": 3,
+          "testErrorCount": 0,
+          "assertPassCount": 5,
+          "assertFailCount": 7,
+          "totalLatencyMs": 69233,
+          "tokenUsage": {
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "total": 0,
+            "numRequests": 3,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            },
+            "assertions": {
+              "total": 1584,
+              "prompt": 769,
+              "completion": 815,
+              "cached": 0,
+              "numRequests": 2,
+              "completionDetails": {
+                "reasoning": 0,
+                "acceptedPrediction": 0,
+                "rejectedPrediction": 0,
+                "cacheReadInputTokens": 0,
+                "cacheCreationInputTokens": 0
+              }
+            }
+          },
+          "namedScores": {},
+          "namedScoresCount": {},
+          "namedScoreWeights": {},
+          "cost": 0
+        }
+      }
+    ],
+    "results": [
+      {
+        "cost": 0,
+        "error": "The expert answer provides the specific email address 'soporte@parachutesa.gt' for Parachute S.A. The submitted answer states that it does not have that email address and suggests contacting the company through other means. This directly contradicts the expert's factual claim, indicating a disagreement rather than a subset, superset, or equivalent detail.",
+        "gradingResult": {
+          "pass": false,
+          "score": 0.5,
+          "reason": "The expert answer provides the specific email address 'soporte@parachutesa.gt' for Parachute S.A. The submitted answer states that it does not have that email address and suggests contacting the company through other means. This directly contradicts the expert's factual claim, indicating a disagreement rather than a subset, superset, or equivalent detail.",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 601,
+            "prompt": 390,
+            "completion": 211,
+            "cached": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          },
+          "componentResults": [
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "latency",
+                "threshold": 60000
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Se ejecutaron faq_specialist y search_faq_tool con una consulta relacionada y resultados de FAQs, sin intentar reservar.",
+              "assertion": {
+                "type": "javascript",
+                "value": "file://evals/check_faq_tools.cjs"
+              }
+            },
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Expected output to contain \"soporte@parachutesa.gt\"",
+              "assertion": {
+                "type": "contains",
+                "value": "soporte@parachutesa.gt"
+              }
+            },
+            {
+              "assertion": {
+                "type": "factuality",
+                "value": "El correo de atención al cliente es soporte@parachutesa.gt."
+              },
+              "pass": false,
+              "score": 0,
+              "reason": "The expert answer provides the specific email address 'soporte@parachutesa.gt' for Parachute S.A. The submitted answer states that it does not have that email address and suggests contacting the company through other means. This directly contradicts the expert's factual claim, indicating a disagreement rather than a subset, superset, or equivalent detail.",
+              "tokensUsed": {
+                "total": 601,
+                "prompt": 390,
+                "completion": 211,
+                "cached": 0,
+                "numRequests": 1,
+                "completionDetails": {
+                  "reasoning": 0,
+                  "acceptedPrediction": 0,
+                  "rejectedPrediction": 0
+                }
+              }
+            }
+          ]
+        },
+        "id": "d05d2bd2-6972-4217-bd2d-6de65b54cfdc",
+        "latencyMs": 35758,
+        "namedScores": {},
+        "prompt": {
+          "raw": "¿Cuál es el correo de atención al cliente de Parachute S.A.?",
+          "label": "{{question}}",
+          "config": {
+            "provider": {
+              "id": "openai:chat:nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+              "config": {
+                "apiBaseUrl": "https://integrate.api.nvidia.com/v1",
+                "apiKeyEnvar": "[REDACTED]",
+                "temperature": 0,
+                "max_tokens": 4096
+              }
+            }
+          }
+        },
+        "promptId": "d3bcaf71c11c2678899be04d872718325f0916b3b0705e805ee29930663a42e2",
+        "promptIdx": 0,
+        "provider": {
+          "id": "file://evals/provider.py",
+          "label": "agente-centralizado"
+        },
+        "response": {
+          "output": "Lo siento, pero no dispongo de la dirección de correo de atención al cliente de Parachute S.A. en la información disponible. Le recomiendo consultar la página web de la empresa o comunicarse mediante el número de teléfono que aparece en su sitio oficial para obtener ese dato. ¿En algo más puedo ayudarle?",
+          "metadata": {
+            "tool_calls": [
+              {
+                "name": "faq_specialist",
+                "arguments": {
+                  "input": "¿Cuál es el correo de atención al cliente de Parachute S.A.?"
+                },
+                "status": "returned",
+                "result": "No cuento con la información del correo de atención al cliente de Parachute S.A. en la base de conocimientos consultada."
+              },
+              {
+                "name": "search_faq_tool",
+                "arguments": {
+                  "query": "correo de atención al cliente"
+                },
+                "status": "returned",
+                "result": "Pregunta: ¿Qué ocurre si tengo ataques de pánico o ansiedad?\nRespuesta: La edad mínima para participar es de 18 años cumplidos presenting DPI o Pasaporte. Menores de 16 y 17 años pueden participar únicamente si se presentan acompañados de ambos padres o tutores legales quienes deberán firmar la autorización correspondiente ante nuestro departamento legal en sitio.\nDistancia: 0.5772\n\nPregunta: ¿Hay una edad máxima para realizar el salto?\nRespuesta: La edad mínima para participar es de 18 años cumplidos presenting DPI o Pasaporte. Menores de 16 y 17 años pueden participar únicamente si se presentan acompañados de ambos padres o tutores legales quienes deberán firmar la autorización correspondiente ante nuestro departamento legal en sitio.\nDistancia: 0.6040\n\nPregunta: ¿Cuál es la edad mínima para realizar un salto?\nRespuesta: La edad mínima para participar es de 18 años cumplidos presenting DPI o Pasaporte. Menores de 16 y 17 años pueden participar únicamente si se presentan acompañados de ambos padres o tutores legales quienes deberán firmar la autorización correspondiente ante nuestro departamento legal en sitio.\nDistancia: 0.6206"
+              }
+            ],
+            "appointments": [],
+            "expected_date": "2026-09-28",
+            "weather_scenario": "live"
+          },
+          "cached": false
+        },
+        "score": 0.5,
+        "success": false,
+        "testCase": {
+          "description": "FAQ - Correo de atención",
+          "vars": {
+            "question": "¿Cuál es el correo de atención al cliente de Parachute S.A.?"
+          },
+          "assert": [
+            {
+              "type": "latency",
+              "threshold": 60000
+            },
+            {
+              "type": "javascript",
+              "value": "file://evals/check_faq_tools.cjs"
+            },
+            {
+              "type": "contains",
+              "value": "soporte@parachutesa.gt"
+            },
+            {
+              "type": "factuality",
+              "value": "El correo de atención al cliente es soporte@parachutesa.gt."
+            }
+          ],
+          "options": {
+            "provider": {
+              "id": "openai:chat:nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+              "config": {
+                "apiBaseUrl": "https://integrate.api.nvidia.com/v1",
+                "apiKeyEnvar": "[REDACTED]",
+                "temperature": 0,
+                "max_tokens": 4096
+              }
+            }
+          },
+          "metadata": {}
+        },
+        "testIdx": 0,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 601,
+            "prompt": 390,
+            "completion": 211,
+            "cached": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "question": "¿Cuál es el correo de atención al cliente de Parachute S.A.?"
+        },
+        "metadata": {
+          "tool_calls": [
+            {
+              "name": "faq_specialist",
+              "arguments": {
+                "input": "¿Cuál es el correo de atención al cliente de Parachute S.A.?"
+              },
+              "status": "returned",
+              "result": "No cuento con la información del correo de atención al cliente de Parachute S.A. en la base de conocimientos consultada."
+            },
+            {
+              "name": "search_faq_tool",
+              "arguments": {
+                "query": "correo de atención al cliente"
+              },
+              "status": "returned",
+              "result": "Pregunta: ¿Qué ocurre si tengo ataques de pánico o ansiedad?\nRespuesta: La edad mínima para participar es de 18 años cumplidos presenting DPI o Pasaporte. Menores de 16 y 17 años pueden participar únicamente si se presentan acompañados de ambos padres o tutores legales quienes deberán firmar la autorización correspondiente ante nuestro departamento legal en sitio.\nDistancia: 0.5772\n\nPregunta: ¿Hay una edad máxima para realizar el salto?\nRespuesta: La edad mínima para participar es de 18 años cumplidos presenting DPI o Pasaporte. Menores de 16 y 17 años pueden participar únicamente si se presentan acompañados de ambos padres o tutores legales quienes deberán firmar la autorización correspondiente ante nuestro departamento legal en sitio.\nDistancia: 0.6040\n\nPregunta: ¿Cuál es la edad mínima para realizar un salto?\nRespuesta: La edad mínima para participar es de 18 años cumplidos presenting DPI o Pasaporte. Menores de 16 y 17 años pueden participar únicamente si se presentan acompañados de ambos padres o tutores legales quienes deberán firmar la autorización correspondiente ante nuestro departamento legal en sitio.\nDistancia: 0.6206"
+            }
+          ],
+          "appointments": [],
+          "expected_date": "2026-09-28",
+          "weather_scenario": "live",
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 1
+      },
+      {
+        "cost": 0,
+        "error": "The expert answer states that the tandem jump is performed at a specific altitude of 3000 meters. The submitted answer claims the altitude is \"approximately 3000–4500 meters,\" which introduces a range that includes values beyond the expert's specified 3000 meters. This contradicts the precise altitude given by the expert, indicating a factual disagreement rather than a simple subset, superset, or irrelevant difference.",
+        "gradingResult": {
+          "pass": false,
+          "score": 0.25,
+          "reason": "The expert answer states that the tandem jump is performed at a specific altitude of 3000 meters. The submitted answer claims the altitude is \"approximately 3000–4500 meters,\" which introduces a range that includes values beyond the expert's specified 3000 meters. This contradicts the precise altitude given by the expert, indicating a factual disagreement rather than a simple subset, superset, or irrelevant difference.",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 983,
+            "prompt": 379,
+            "completion": 604,
+            "cached": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          },
+          "componentResults": [
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "latency",
+                "threshold": 60000
+              }
+            },
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "El Manager no completó la llamada a faq_specialist.",
+              "assertion": {
+                "type": "javascript",
+                "value": "file://evals/check_faq_tools.cjs"
+              }
+            },
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Expected output to match regex \"\\b3[.,\\s]?000\\s*(?:metros|m\\b)\"",
+              "assertion": {
+                "type": "regex",
+                "value": "\\b3[.,\\s]?000\\s*(?:metros|m\\b)"
+              }
+            },
+            {
+              "assertion": {
+                "type": "factuality",
+                "value": "El salto tándem se realiza a una altitud de 3000 metros sobre el nivel medio del mar. El paracaídas principal se despliega a 1500 metros sobre el terreno.\n"
+              },
+              "pass": false,
+              "score": 0,
+              "reason": "The expert answer states that the tandem jump is performed at a specific altitude of 3000 meters. The submitted answer claims the altitude is \"approximately 3000–4500 meters,\" which introduces a range that includes values beyond the expert's specified 3000 meters. This contradicts the precise altitude given by the expert, indicating a factual disagreement rather than a simple subset, superset, or irrelevant difference.",
+              "tokensUsed": {
+                "total": 983,
+                "prompt": 379,
+                "completion": 604,
+                "cached": 0,
+                "numRequests": 1,
+                "completionDetails": {
+                  "reasoning": 0,
+                  "acceptedPrediction": 0,
+                  "rejectedPrediction": 0
+                }
+              }
+            }
+          ]
+        },
+        "id": "d4bf67c4-95af-40a4-a1d0-b5e7a4ce6086",
+        "latencyMs": 9226,
+        "namedScores": {},
+        "prompt": {
+          "raw": "¿A qué altura se realiza el salto tándem? Responde en metros.",
+          "label": "{{question}}",
+          "config": {
+            "provider": {
+              "id": "openai:chat:nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+              "config": {
+                "apiBaseUrl": "https://integrate.api.nvidia.com/v1",
+                "apiKeyEnvar": "[REDACTED]",
+                "temperature": 0,
+                "max_tokens": 4096
+              }
+            }
+          }
+        },
+        "promptId": "d3bcaf71c11c2678899be04d872718325f0916b3b0705e805ee29930663a42e2",
+        "promptIdx": 0,
+        "provider": {
+          "id": "file://evals/provider.py",
+          "label": "agente-centralizado"
+        },
+        "response": {
+          "output": "El salto tándem se realiza típicamente a una altitud de aproximadamente 3000 – 4500 metros.",
+          "metadata": {
+            "tool_calls": [],
+            "appointments": [],
+            "expected_date": "2026-09-28",
+            "weather_scenario": "live"
+          },
+          "cached": false
+        },
+        "score": 0.25,
+        "success": false,
+        "testCase": {
+          "description": "FAQ - Altitud del salto",
+          "vars": {
+            "question": "¿A qué altura se realiza el salto tándem? Responde en metros."
+          },
+          "assert": [
+            {
+              "type": "latency",
+              "threshold": 60000
+            },
+            {
+              "type": "javascript",
+              "value": "file://evals/check_faq_tools.cjs"
+            },
+            {
+              "type": "regex",
+              "value": "\\b3[.,\\s]?000\\s*(?:metros|m\\b)"
+            },
+            {
+              "type": "factuality",
+              "value": "El salto tándem se realiza a una altitud de 3000 metros sobre el nivel medio del mar. El paracaídas principal se despliega a 1500 metros sobre el terreno.\n"
+            }
+          ],
+          "options": {
+            "provider": {
+              "id": "openai:chat:nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+              "config": {
+                "apiBaseUrl": "https://integrate.api.nvidia.com/v1",
+                "apiKeyEnvar": "[REDACTED]",
+                "temperature": 0,
+                "max_tokens": 4096
+              }
+            }
+          },
+          "metadata": {}
+        },
+        "testIdx": 1,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 983,
+            "prompt": 379,
+            "completion": 604,
+            "cached": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "question": "¿A qué altura se realiza el salto tándem? Responde en metros."
+        },
+        "metadata": {
+          "tool_calls": [],
+          "appointments": [],
+          "expected_date": "2026-09-28",
+          "weather_scenario": "live",
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 1
+      },
+      {
+        "cost": 0,
+        "error": "API error: 503 Service Unavailable\n{\"error\":{\"message\":\"ResourceExhausted: Worker local total request limit reached (16/16)\",\"type\":\"Service Unavailable\",\"code\":503}}",
+        "gradingResult": {
+          "pass": false,
+          "score": 0.5,
+          "reason": "API error: 503 Service Unavailable\n{\"error\":{\"message\":\"ResourceExhausted: Worker local total request limit reached (16/16)\",\"type\":\"Service Unavailable\",\"code\":503}}",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          },
+          "componentResults": [
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "latency",
+                "threshold": 60000
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Se ejecutaron faq_specialist y search_faq_tool con una consulta relacionada y resultados de FAQs, sin intentar reservar.",
+              "assertion": {
+                "type": "javascript",
+                "value": "file://evals/check_faq_tools.cjs"
+              }
+            },
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Expected output to match regex \"\\b200\\s*km\\s*/\\s*h\\b\"",
+              "assertion": {
+                "type": "regex",
+                "value": "\\b200\\s*km\\s*/\\s*h\\b"
+              }
+            },
+            {
+              "assertion": {
+                "type": "factuality",
+                "value": "Durante la caída libre se alcanza una velocidad terminal promedio de 200 km/h, mantenida aproximadamente entre 35 y 45 segundos antes de abrir el paracaídas principal.\n"
+              },
+              "pass": false,
+              "reason": "API error: 503 Service Unavailable\n{\"error\":{\"message\":\"ResourceExhausted: Worker local total request limit reached (16/16)\",\"type\":\"Service Unavailable\",\"code\":503}}",
+              "score": 0,
+              "tokensUsed": {
+                "total": 0,
+                "prompt": 0,
+                "completion": 0,
+                "cached": 0,
+                "numRequests": 0,
+                "completionDetails": {
+                  "reasoning": 0,
+                  "acceptedPrediction": 0,
+                  "rejectedPrediction": 0
+                }
+              }
+            }
+          ]
+        },
+        "id": "99cca292-f40f-4e8b-aa2c-04de3561a130",
+        "latencyMs": 24249,
+        "namedScores": {},
+        "prompt": {
+          "raw": "¿Qué velocidad se alcanza durante la caída libre? Responde en km/h.",
+          "label": "{{question}}",
+          "config": {
+            "provider": {
+              "id": "openai:chat:nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+              "config": {
+                "apiBaseUrl": "https://integrate.api.nvidia.com/v1",
+                "apiKeyEnvar": "[REDACTED]",
+                "temperature": 0,
+                "max_tokens": 4096
+              }
+            }
+          }
+        },
+        "promptId": "d3bcaf71c11c2678899be04d872718325f0916b3b0705e805ee29930663a42e2",
+        "promptIdx": 0,
+        "provider": {
+          "id": "file://evals/provider.py",
+          "label": "agente-centralizado"
+        },
+        "response": {
+          "output": "Lo siento, no dispongo de información sobre la velocidad alcanzada durante la caída libre.",
+          "metadata": {
+            "tool_calls": [
+              {
+                "name": "faq_specialist",
+                "arguments": {
+                  "input": "What speed is reached during free fall?"
+                },
+                "status": "returned",
+                "result": "No cuento con información sobre la velocidad alcanzada durante el libre fallo en la base de conocimientos proporcionada."
+              },
+              {
+                "name": "search_faq_tool",
+                "arguments": {
+                  "query": "free fall speed"
+                },
+                "status": "returned",
+                "result": "Pregunta: ¿Qué sucede si hay una falla técnica y mi video no se graba?\nRespuesta: Respuesta detallada para la consulta sobre '¿Qué sucede si hay una falla técnica y mi video no se graba?' en el contexto del evento de Parachute S.A. del 29 de septiembre de 2026 en Guatemala. Categoría oficial: [Fotografía y Contenido Multimedia]. Esta política y procedimiento es dictado bajo las normativas vigentes de seguridad aeronáutica y los estándares internacionales de paracaidismo tándem. Para más detalles específicos sobre la ficha #90, consulte directamente con la central de atención al cliente de Parachute S.A. a través de soporte@parachutesa.gt.\nDistancia: 0.7370\n\nPregunta: ¿Qué sucede si el avión presenta una falla técnica en vuelo?\nRespuesta: Respuesta detallada para la consulta sobre '¿Qué sucede si el avión presenta una falla técnica en vuelo?' en el contexto del evento de Parachute S.A. del 29 de septiembre de 2026 en Guatemala. Categoría oficial: [Seguridad y Normativa Aeronáutica]. Esta política y procedimiento es dictado bajo las normativas vigentes de seguridad aeronáutica y los estándares internacionales de paracaidismo tándem. Para más detalles específicos sobre la ficha #59, consulte directamente con la central de atención al cliente de Parachute S.A. a través de soporte@parachutesa.gt.\nDistancia: 0.7398\n\nPregunta: ¿Puedo saltar si sufro de hipertensión?\nRespuesta: Respuesta detallada para la consulta sobre '¿Puedo saltar si sufro de hipertensión?' en el contexto del evento de Parachute S.A. del 29 de septiembre de 2026 en Guatemala. Categoría oficial: [Requisitos Físicos y Salud]. Esta política y procedimiento es dictado bajo las normativas vigentes de seguridad aeronáutica y los estándares internacionales de paracaidismo tándem. Para más detalles específicos sobre la ficha #26, consulte directamente con la central de atención al cliente de Parachute S.A. a través de soporte@parachutesa.gt.\nDistancia: 0.7745"
+              }
+            ],
+            "appointments": [],
+            "expected_date": "2026-09-28",
+            "weather_scenario": "live"
+          },
+          "cached": false
+        },
+        "score": 0.5,
+        "success": false,
+        "testCase": {
+          "description": "FAQ - Velocidad de caída libre",
+          "vars": {
+            "question": "¿Qué velocidad se alcanza durante la caída libre? Responde en km/h."
+          },
+          "assert": [
+            {
+              "type": "latency",
+              "threshold": 60000
+            },
+            {
+              "type": "javascript",
+              "value": "file://evals/check_faq_tools.cjs"
+            },
+            {
+              "type": "regex",
+              "value": "\\b200\\s*km\\s*/\\s*h\\b"
+            },
+            {
+              "type": "factuality",
+              "value": "Durante la caída libre se alcanza una velocidad terminal promedio de 200 km/h, mantenida aproximadamente entre 35 y 45 segundos antes de abrir el paracaídas principal.\n"
+            }
+          ],
+          "options": {
+            "provider": {
+              "id": "openai:chat:nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+              "config": {
+                "apiBaseUrl": "https://integrate.api.nvidia.com/v1",
+                "apiKeyEnvar": "[REDACTED]",
+                "temperature": 0,
+                "max_tokens": 4096
+              }
+            }
+          },
+          "metadata": {}
+        },
+        "testIdx": 2,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "question": "¿Qué velocidad se alcanza durante la caída libre? Responde en km/h."
+        },
+        "metadata": {
+          "tool_calls": [
+            {
+              "name": "faq_specialist",
+              "arguments": {
+                "input": "What speed is reached during free fall?"
+              },
+              "status": "returned",
+              "result": "No cuento con información sobre la velocidad alcanzada durante el libre fallo en la base de conocimientos proporcionada."
+            },
+            {
+              "name": "search_faq_tool",
+              "arguments": {
+                "query": "free fall speed"
+              },
+              "status": "returned",
+              "result": "Pregunta: ¿Qué sucede si hay una falla técnica y mi video no se graba?\nRespuesta: Respuesta detallada para la consulta sobre '¿Qué sucede si hay una falla técnica y mi video no se graba?' en el contexto del evento de Parachute S.A. del 29 de septiembre de 2026 en Guatemala. Categoría oficial: [Fotografía y Contenido Multimedia]. Esta política y procedimiento es dictado bajo las normativas vigentes de seguridad aeronáutica y los estándares internacionales de paracaidismo tándem. Para más detalles específicos sobre la ficha #90, consulte directamente con la central de atención al cliente de Parachute S.A. a través de soporte@parachutesa.gt.\nDistancia: 0.7370\n\nPregunta: ¿Qué sucede si el avión presenta una falla técnica en vuelo?\nRespuesta: Respuesta detallada para la consulta sobre '¿Qué sucede si el avión presenta una falla técnica en vuelo?' en el contexto del evento de Parachute S.A. del 29 de septiembre de 2026 en Guatemala. Categoría oficial: [Seguridad y Normativa Aeronáutica]. Esta política y procedimiento es dictado bajo las normativas vigentes de seguridad aeronáutica y los estándares internacionales de paracaidismo tándem. Para más detalles específicos sobre la ficha #59, consulte directamente con la central de atención al cliente de Parachute S.A. a través de soporte@parachutesa.gt.\nDistancia: 0.7398\n\nPregunta: ¿Puedo saltar si sufro de hipertensión?\nRespuesta: Respuesta detallada para la consulta sobre '¿Puedo saltar si sufro de hipertensión?' en el contexto del evento de Parachute S.A. del 29 de septiembre de 2026 en Guatemala. Categoría oficial: [Requisitos Físicos y Salud]. Esta política y procedimiento es dictado bajo las normativas vigentes de seguridad aeronáutica y los estándares internacionales de paracaidismo tándem. Para más detalles específicos sobre la ficha #26, consulte directamente con la central de atención al cliente de Parachute S.A. a través de soporte@parachutesa.gt.\nDistancia: 0.7745"
+            }
+          ],
+          "appointments": [],
+          "expected_date": "2026-09-28",
+          "weather_scenario": "live",
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 1
+      }
+    ],
+    "stats": {
+      "successes": 0,
+      "failures": 3,
+      "errors": 0,
+      "tokenUsage": {
+        "prompt": 0,
+        "completion": 0,
+        "cached": 0,
+        "total": 0,
+        "numRequests": 3,
+        "completionDetails": {
+          "reasoning": 0,
+          "acceptedPrediction": 0,
+          "rejectedPrediction": 0,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        },
+        "assertions": {
+          "total": 1584,
+          "prompt": 769,
+          "completion": 815,
+          "cached": 0,
+          "numRequests": 2,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          }
+        }
+      },
+      "durationMs": 84659,
+      "evaluationDurationMs": 84659
+    }
+  },
+  "config": {
+    "tags": {},
+    "description": "Parachute S.A. - Evals de preguntas frecuentes",
+    "prompts": [
+      "{{question}}"
+    ],
+    "providers": [
+      {
+        "id": "file://evals/provider.py",
+        "label": "agente-centralizado"
+      }
+    ],
+    "tests": [
+      {
+        "description": "FAQ - Correo de atención",
+        "vars": {
+          "question": "¿Cuál es el correo de atención al cliente de Parachute S.A.?"
+        },
+        "assert": [
+          {
+            "type": "contains",
+            "value": "soporte@parachutesa.gt"
+          },
+          {
+            "type": "factuality",
+            "value": "El correo de atención al cliente es soporte@parachutesa.gt."
+          }
+        ]
+      },
+      {
+        "description": "FAQ - Altitud del salto",
+        "vars": {
+          "question": "¿A qué altura se realiza el salto tándem? Responde en metros."
+        },
+        "assert": [
+          {
+            "type": "regex",
+            "value": "\\b3[.,\\s]?000\\s*(?:metros|m\\b)"
+          },
+          {
+            "type": "factuality",
+            "value": "El salto tándem se realiza a una altitud de 3000 metros sobre el nivel medio del mar. El paracaídas principal se despliega a 1500 metros sobre el terreno.\n"
+          }
+        ]
+      },
+      {
+        "description": "FAQ - Velocidad de caída libre",
+        "vars": {
+          "question": "¿Qué velocidad se alcanza durante la caída libre? Responde en km/h."
+        },
+        "assert": [
+          {
+            "type": "regex",
+            "value": "\\b200\\s*km\\s*/\\s*h\\b"
+          },
+          {
+            "type": "factuality",
+            "value": "Durante la caída libre se alcanza una velocidad terminal promedio de 200 km/h, mantenida aproximadamente entre 35 y 45 segundos antes de abrir el paracaídas principal.\n"
+          }
+        ]
+      }
+    ],
+    "env": {},
+    "defaultTest": {
+      "options": {
+        "provider": {
+          "id": "openai:chat:nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+          "config": {
+            "apiBaseUrl": "https://integrate.api.nvidia.com/v1",
+            "apiKeyEnvar": "[REDACTED]",
+            "temperature": 0,
+            "max_tokens": 4096
+          }
+        }
+      },
+      "assert": [
+        {
+          "type": "latency",
+          "threshold": 60000
+        },
+        {
+          "type": "javascript",
+          "value": "file://evals/check_faq_tools.cjs"
+        }
+      ],
+      "vars": {},
+      "metadata": {}
+    },
+    "outputPath": [
+      "report/evals/faqs.html",
+      "report/evals/faqs.json"
+    ],
+    "extensions": [],
+    "metadata": {},
+    "evaluateOptions": {}
+  },
+  "shareableUrl": null,
+  "metadata": {
+    "promptfooVersion": "0.123.1",
+    "nodeVersion": "v24.19.0",
+    "platform": "win32",
+    "arch": "x64",
+    "exportedAt": "2026-09-27T18:48:52.899Z",
+    "evaluationCreatedAt": "2026-09-27T18:47:27.002Z"
+  },
+  "vars": [
+    "question"
+  ],
+  "runtimeOptions": {
+    "eventSource": "cli",
+    "showProgressBar": true,
+    "repeat": 1,
+    "maxConcurrency": 1,
+    "cache": false
+  }
+}
