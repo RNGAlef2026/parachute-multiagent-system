@@ -26,3 +26,24 @@ node_modules/
 
 # Datos locales de promptfoo
 .promptfoo/
+
+# Logs
+*.log
+logs/
+
+# Python testing
+.pytest_cache/
+.coverage
+
+# Temporary files
+*.tmp
+*.bak
+
+# Respaldo de la terminal anterior
+centralized/main_backup.py
+
+# Resultados temporales de pruebas anteriores
+/resultado-cita-lluvia.json
+/retry-altitud.json
+/retry-cita-ideal.json
+/retry-cita-ideal-corregida.json

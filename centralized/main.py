@@ -1,165 +1,123 @@
+
+"""Cliente de terminal A2A para Parachute S.A."""
+
 import asyncio
-import os
+import logging
 
-from dotenv import load_dotenv
-from openai import AsyncOpenAI
-from agents import Agent, Runner, OpenAIChatCompletionsModel, set_tracing_disabled
-from agents.mcp import MCPServerStreamableHttp
+import httpx
 
-# ============================================================
-# CONFIGURACION DEL MODELO
-# ============================================================
-
-load_dotenv()
-set_tracing_disabled(True)
-
-NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1"
-NVIDIA_MODEL = "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning"
-
-nvidia_client = AsyncOpenAI(
-    base_url=NVIDIA_BASE_URL,
-    api_key=os.getenv("NVIDIA_API_KEY"),
+from a2a.client import A2AClient
+from a2a.types import (
+    AgentCard,
+    MessageSendParams,
+    SendMessageRequest,
 )
-
-model = OpenAIChatCompletionsModel(
-    model=NVIDIA_MODEL,
-    openai_client=nvidia_client,
-)
+from a2a.utils import new_agent_text_message
 
 
-# ============================================================
-# AGENTES ESPECIALIZADOS
-# ============================================================
+A2A_URL = "http://127.0.0.1:8001"
+
+logging.getLogger("httpx").setLevel(logging.WARNING)
+
 
 async def main():
-    async with MCPServerStreamableHttp(
-        name="Parachute MCP",
-        params={"url": "http://127.0.0.1:8000/mcp", "timeout": 30},
-        cache_tools_list=True,
-    ) as mcp_server:
-        faq_agent = Agent(
-            name="FAQ Agent",
-            instructions=(
-                "Eres el agente especializado en preguntas frecuentes "
-                "de Parachute S.A. "
-                "Para responder preguntas debes utilizar search_faq_tool. "
-                "Basa tus respuestas unicamente en la informacion obtenida "
-                "de la base de conocimientos. "
-                "Si la informacion recuperada no permite responder la pregunta, "
-                "indica que no cuentas con esa informacion. "
-                "Responde de forma clara, breve y en español."
-            ),
-            model=model,
-            mcp_servers=[mcp_server],
-        )
+    print("\nParachute S.A. - Cliente A2A")
+    print("Escribe 'Bye' para salir.\n")
 
-        weather_agent = Agent(
-            name="Weather Agent",
-            instructions=(
-                "Eres el especialista meteorologico y de seguridad de Parachute S.A. "
-                "Cuando debas evaluar una fecha para realizar un salto, utiliza "
-                "check_weather_tool. "
-                "Nunca inventes datos meteorologicos ni determines la seguridad "
-                "por tu cuenta: utiliza siempre el resultado de la herramienta. "
-                "Si la fecha esta fuera del rango disponible de pronostico, "
-                "informa claramente al usuario. "
-                "Responde en español."
-            ),
-            model=model,
-            mcp_servers=[mcp_server]
-        )
+    async with httpx.AsyncClient(timeout=120.0) as http_client:
 
-        booking_agent = Agent(
-            name="Booking Agent",
-            instructions=(
-                "Eres el especialista en calendarizacion de Parachute S.A. "
-                "Utiliza create_appointment_tool para registrar una cita "
-                "solamente cuando el Manager te indique que las condiciones "
-                "meteorologicas permiten realizarla. "
-                "Necesitas nombre, fecha y tipo de salto antes de crearla. "
-                "Si falta algun dato, indicalo en lugar de inventarlo. "
-                "Responde en español."
-            ),
-            model=model,
-            mcp_servers=[mcp_server],
-        )
+        # Descubrir el agente mediante su Agent Card
+        try:
+            response = await http_client.get(
+                f"{A2A_URL}/.well-known/agent-card.json"
+            )
+            response.raise_for_status()
 
-        # ============================================================
-        # MANAGER CENTRAL
-        # ============================================================
+            agent_card = AgentCard.model_validate(
+                response.json()
+            )
 
-        manager_agent = Agent(
-            name="Manager Agent",
-            instructions=(
-                "Eres el agente central y supervisor de Parachute S.A. "
-                "Tu responsabilidad es decidir que especialista utilizar.\n\n"
+            client = A2AClient(
+                httpx_client=http_client,
+                agent_card=agent_card,
+            )
 
-                "Para preguntas frecuentes utiliza faq_specialist.\n"
+            print(f"Conectado a: {agent_card.name}")
+            print(
+                "Skills disponibles: "
+                + ", ".join(skill.id for skill in agent_card.skills)
+                + "\n"
+            )
 
-                "Para consultar clima o evaluar si una fecha es segura para saltar, "
-                "utiliza weather_specialist.\n"
-
-                "Para calendarizar una cita debes seguir obligatoriamente este flujo:\n"
-                "1. Asegurate de conocer la fecha solicitada.\n"
-                "2. Utiliza weather_specialist para evaluar esa fecha.\n"
-                "3. Si el resultado es UNSAFE, NO calendarices la cita.\n"
-                "4. Si es IDEAL, puedes utilizar booking_specialist.\n"
-                "5. Si es MARGINAL, explica la restriccion y solo procede cuando "
-                "corresponda a un salto tandem experimentado.\n"
-                "6. Para reservar necesitas nombre, fecha y tipo de salto. "
-                "Si falta informacion, solicitala al usuario.\n\n"
-
-                "Nunca inventes informacion meteorologica, FAQs ni confirmaciones "
-                "de citas. Utiliza siempre los agentes especializados."
-            ),
-            model=model,
-            tools=[
-                faq_agent.as_tool(
-                    tool_name="faq_specialist",
-                    tool_description=(
-                        "Consulta al especialista en preguntas frecuentes "
-                        "de Parachute S.A."
-                    ),
-                ),
-                weather_agent.as_tool(
-                    tool_name="weather_specialist",
-                    tool_description=(
-                        "Consulta clima y determina si una fecha es segura "
-                        "para realizar un salto."
-                    ),
-                ),
-                booking_agent.as_tool(
-                    tool_name="booking_specialist",
-                    tool_description=(
-                        "Calendariza una cita cuando las condiciones "
-                        "meteorologicas ya fueron verificadas."
-                    ),
-                ),
-            ],
-        )
-
-
-        # ============================================================
-        # PROGRAMA PRINCIPAL
-        # ============================================================
-
-        print("\nParachute S.A. - Arquitectura Centralizada (MCP)")
-        print("Escribe 'Bye' para salir.\n")
+        except Exception as error:
+            print(f"No se pudo conectar al servidor A2A: {error}")
+            return
 
         while True:
             try:
-                user_input = await asyncio.to_thread(input, "Usuario: ")
-                user_input = user_input.strip()
-                if user_input.lower() == "bye":
+                question = (
+                    await asyncio.to_thread(input, "Usuario: ")
+                ).strip()
+
+                if question.lower() == "bye":
                     print("Hasta luego.")
                     break
-                if not user_input:
+
+                if not question:
                     continue
-                result = await Runner.run(manager_agent, user_input)
-                print(f"\nAgente: {result.final_output}\n")
+
+                message = new_agent_text_message(question)
+
+                request = SendMessageRequest(
+                    id=message.message_id,
+                    params=MessageSendParams(
+                        message=message
+                    ),
+                )
+
+                response = await client.send_message(request)
+
+                # El SDK devuelve una respuesta JSON-RPC
+                result = response.root
+
+                if hasattr(result, "error"):
+                    print(f"\nError A2A: {result.error}\n")
+                    continue
+
+                payload = result.result
+
+                # Respuesta directa tipo Message
+                if hasattr(payload, "parts"):
+                    parts = payload.parts
+
+                # Respuesta tipo Task con mensajes o artifacts
+                else:
+                    parts = []
+
+                    if payload.status.message:
+                        parts.extend(payload.status.message.parts)
+
+                    for artifact in payload.artifacts or []:
+                        parts.extend(artifact.parts)
+
+                texts = [
+                    part.root.text
+                    for part in parts
+                    if getattr(part.root, "text", None) is not None
+                ]
+
+                answer = "\n".join(texts).strip()
+
+                print(
+                    f"\nAgente: {answer or 'Sin respuesta de texto.'}\n"
+                )
+
             except (KeyboardInterrupt, EOFError):
                 print("\nHasta luego.")
                 break
+
+            except Exception as error:
+                print(f"\nError de comunicacion A2A: {error}\n")
 
 
 if __name__ == "__main__":
