@@ -594,6 +594,148 @@ La lógica de negocio y las integraciones se encuentran separadas de los agentes
 
 ---
 
+# Hoja de Trabajo #7 — Protocolos MCP y A2A
+
+## Objetivo
+
+Integrar los protocolos Model Context Protocol (MCP) y Agent2Agent (A2A) al sistema multiagente de Parachute S.A.
+
+La implementación centraliza las herramientas en un servidor MCP y expone el sistema multiagente como un único agente mediante A2A.
+
+## Arquitectura implementada
+
+```text
+Cliente A2A (Terminal)
+         |
+         | A2A / JSON-RPC
+         v
+Servidor A2A (Puerto 8001)
+         |
+         v
+ParachuteExecutor
+         |
+         v
+Manager Agent
+         |
+    +----+----+
+    |    |    |
+   FAQ Weather Booking
+    |    |    |
+    +----+----+
+         |
+         | MCP / Streamable HTTP
+         v
+Servidor MCP (Puerto 8000)
+         |
+    +----+----+
+    |    |    |
+   FAQ Clima Reservaciones
+```
+
+## Servidor MCP
+
+Implementado en `mcp_server/server.py`.
+
+Utiliza FastMCP y transporte Streamable HTTP.
+
+Herramientas disponibles:
+
+- `search_faq_tool`: realiza búsquedas semánticas en PostgreSQL + pgvector.
+- `check_weather_tool`: consulta las condiciones meteorológicas y evalúa la seguridad.
+- `create_appointment_tool`: valida las condiciones y gestiona reservaciones.
+
+El servidor registra logs de las herramientas ejecutadas y sus resultados.
+
+## Servidor A2A
+
+Implementado en:
+
+- `a2a_server/server.py`
+- `a2a_server/agent_executor.py`
+
+Publica el sistema multiagente como un único agente mediante el protocolo A2A.
+
+La Agent Card se encuentra disponible en:
+
+`http://127.0.0.1:8001/.well-known/agent-card.json`
+
+Skills publicadas:
+
+- `faq`: preguntas frecuentes.
+- `weather`: consultas meteorológicas.
+- `booking`: reservaciones.
+
+El servidor utiliza `ParachuteExecutor` para recibir solicitudes A2A y ejecutar el Manager Agent mediante OpenAI Agents SDK.
+
+## Cliente A2A
+
+La interfaz `centralized/main.py` fue adaptada para funcionar como cliente A2A.
+
+Ahora descubre al agente mediante su Agent Card y envía mensajes al servidor A2A en lugar de ejecutar directamente el Manager.
+
+## Ejecución
+
+Se requieren tres terminales abiertas en la raíz del proyecto, con el entorno virtual activado.
+
+**Terminal 1 — PostgreSQL y MCP**
+
+```bash
+docker compose up -d
+python -m mcp_server.server
+```
+
+**Terminal 2 — Servidor A2A**
+
+```bash
+python -m a2a_server.server
+```
+
+**Terminal 3 — Cliente A2A**
+
+```bash
+python -m centralized.main
+```
+
+Para finalizar la interacción, escribir `Bye`.
+
+## Configuración del modelo
+
+La implementación A2A utiliza Groq mediante una API compatible con OpenAI.
+
+Modelo utilizado:
+
+`openai/gpt-oss-20b`
+
+La configuración se encuentra en `centralized/model_config.py`.
+
+Se requiere definir `GROQ_API_KEY` en el archivo `.env`.
+
+## Pruebas realizadas
+
+Se verificó:
+
+- Inicio del servidor MCP mediante Streamable HTTP.
+- Descubrimiento y ejecución de las tres herramientas MCP.
+- Inicio del servidor A2A.
+- Publicación de la Agent Card y las tres skills.
+- Conexión de la terminal mediante A2A.
+- Consultas FAQ utilizando PostgreSQL + pgvector.
+- Consultas meteorológicas mediante Open-Meteo.
+- Rechazo de reservaciones con fechas inválidas.
+- Registro de logs en los servidores MCP y A2A.
+- Prueba unitaria de creación de reservaciones con condiciones meteorológicas simuladas como ideales.
+
+La prueba de creación de citas utiliza mocks para evitar modificar `appointments.json`. No representa una reservación real ejecutada mediante A2A.
+
+## Evidencia
+
+La demostración en video presenta:
+
+1. El servidor MCP ejecutándose y registrando herramientas.
+2. El servidor A2A ejecutándose y registrando solicitudes.
+3. La aplicación de terminal comunicándose con el servidor A2A.
+
+
 ## Autor
 
 Proyecto desarrollado para el curso **CC3116**.
